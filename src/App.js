@@ -5,6 +5,9 @@ import { withAuthenticator } from '@aws-amplify/ui-react';
 import { listNotes } from './graphql/queries';
 import { createNote as createNoteMutation, deleteNote as deleteNoteMutation } from './graphql/mutations';
 import '@aws-amplify/ui-react/styles.css';
+import { Button } from '@aws-amplify/ui-react';
+
+
 const initialFormState = { name: '', description: '' }
 
 function App() {
@@ -52,35 +55,53 @@ function App() {
     await Storage.put(file.name, file);
     fetchNotes();
   }
-  
+  const signOut = ()=>{
+    window.localStorage.clear();
+    window.location.reload();
+  }
   return (
     <div className="App">
-      <h1>My Notes App</h1>
+      <h1>AWS Demo - Public Blackboard</h1>
       <input
         onChange={e => setFormData({ ...formData, 'name': e.target.value})}
         placeholder="Note name"
         value={formData.name}
+        style={{
+          height:"45px",
+          width:"180px",
+          marginRight:"10px",
+          borderRadius:"5px",
+          border:"1px solid grey"
+        }}
       />
       <input
         onChange={e => setFormData({ ...formData, 'description': e.target.value})}
         placeholder="Note description"
         value={formData.description}
+        style={{
+          height:"45px",
+          width:"180px",
+          marginRight:"10px",
+          borderRadius:"5px",
+          border:"1px solid grey"
+        }}
       />
       <input
         type="file"
         onChange={onChange}
       />
-      <button onClick={createNote}>Create Note</button>
-      <div style={{marginBottom: 30}}>
+      <Button style={{border:"2px solid grey",margin:"10px"}} onClick={createNote}>Create Note</Button>
+      <Button style={{border:"2px solid grey"}} onClick={signOut}>Sign Out</Button>
+      <div className='itemContainer' style={{marginBottom: 30}}>
       {
         notes.map(note => (
-          <div key={note.id || note.name}>
-            <h2>{note.name}</h2>
+          <div className='item' key={note.id || note.name}>
+            <p style={{textDecoration:"bold"}}>{note.name}</p>
             <p>{note.description}</p>
-            <button onClick={() => deleteNote(note)}>Delete note</button>
             {
-              note.image && <img src={note.image} alt='' style={{width: 400}} />
+              note.image && <img src={note.image} alt='' style={{width: "200px", height: "200px", objectFit:"contain"}} />
             }
+            <Button style={{border:"2px solid grey"}} onClick={() => deleteNote(note)}>Delete note</Button>
           </div>
         ))
       }
